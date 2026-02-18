@@ -25,4 +25,4 @@ export const Users = pgTable(
   }),
 );
 
-export type UserType = typeof Users.$inferSelect;
+export type UserSchemaType = typeof Users.$inferSelect;

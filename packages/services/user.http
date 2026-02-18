@@ -1,10 +1,19 @@
-### Create User - Success Case
+### signup user
 POST http://localhost:8000/service/users
 Content-Type: application/json
 
 {
   "fname": "John",
   "lname": "Doe",
+  "email": "john.doe@example.com",
+  "password": "SecurePass123"
+}
+
+### signin user
+POST http://localhost:8000/service/users/signin
+Content-Type: application/json
+
+{
   "email": "john.doe@example.com",
   "password": "SecurePass123"
 }

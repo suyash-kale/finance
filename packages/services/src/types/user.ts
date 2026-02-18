@@ -1,10 +1,15 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { UserType as User } from '@/database/schema/users.schema';
+import { UserSchemaType } from '@/database/schema/users.schema';
 
-export type UserType = Pick<User, 'user_id' | 'fname' | 'lname' | 'email'>;
+export type UserSessionType = Pick<
+  UserSchemaType,
+  'fname' | 'lname' | 'email'
+> & {
+  token: string;
+};
 
 export class SignUpRequest implements Pick<
-  User,
+  UserSchemaType,
   'fname' | 'lname' | 'email' | 'password'
 > {
   @IsNotEmpty()
@@ -15,6 +20,19 @@ export class SignUpRequest implements Pick<
   @IsString()
   lname: string;
 
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @MinLength(6)
+  password: string;
+}
+
+export class SignInRequest implements Pick<
+  UserSchemaType,
+  'email' | 'password'
+> {
   @IsNotEmpty()
   @IsEmail()
   email: string;
