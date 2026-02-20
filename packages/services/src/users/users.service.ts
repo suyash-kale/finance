@@ -3,7 +3,12 @@ import { count, eq, or } from 'drizzle-orm';
 import { validate } from 'class-validator';
 
 import { DRIZZLE, type DrizzleDB, schema } from '@/database/database.module';
-import { SignInRequest, SignUpRequest, UserSessionType } from '@/types/user';
+import {
+  SignInRequest,
+  SignUpRequest,
+  UserSessionType,
+  UserType,
+} from '@/types/user';
 import { ServiceError, ServiceErrorCodes } from '@/utility/error';
 import { HashService } from '@/utility/hash';
 import { EncryptService } from '@/utility/encrypt';
@@ -18,7 +23,7 @@ export class UsersService {
     @Inject(JwtService) private jwt: JwtService,
   ) {}
 
-  async signUp(request: SignUpRequest): Promise<UserSessionType> {
+  async signUp(request: SignUpRequest): Promise<UserType> {
     // validate the request data
     if ((await validate(request)).length > 0) {
       throw new ServiceError(ServiceErrorCodes.VALIDATION, 'Invalid user data');
@@ -57,7 +62,7 @@ export class UsersService {
     };
   }
 
-  async signIn(request: SignInRequest): Promise<UserSessionType> {
+  async signIn(request: SignInRequest): Promise<UserType> {
     // validate the request data
     if ((await validate(request)).length > 0) {
       throw new ServiceError(
@@ -68,6 +73,7 @@ export class UsersService {
     // find the user by email
     const [user] = await this.db
       .select({
+        user_id: schema.Users.user_id,
         fname: schema.Users.fname,
         lname: schema.Users.lname,
         email: schema.Users.email,
@@ -89,8 +95,8 @@ export class UsersService {
       return {
         fname: user.fname,
         lname: user.lname,
-        email: user.email,
-        token: this.jwt.encode({ user_id: user.email }),
+        email: await this.encrypt.decrypt(user.email),
+        token: this.jwt.encode({ user_id: user.user_id }),
       };
     }
     // if password does not match
@@ -98,5 +104,26 @@ export class UsersService {
       ServiceErrorCodes.NOTFOUND,
       'Invalid email or password.',
     );
+  }
+
+  async me(session: UserSessionType): Promise<UserType> {
+    const [user] = await this.db
+
+      .select({
+        fname: schema.Users.fname,
+        lname: schema.Users.lname,
+        email: schema.Users.email,
+      })
+      .from(schema.Users)
+      .where(eq(schema.Users.user_id, session.user_id));
+    if (!user) {
+      throw new ServiceError(ServiceErrorCodes.NOTFOUND, 'User not found.');
+    }
+    return {
+      fname: user.fname,
+      lname: user.lname,
+      email: await this.encrypt.decrypt(user.email),
+      token: session.token,
+    };
   }
 }

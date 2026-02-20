@@ -1,16 +1,19 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
 
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
-import { DatabaseModule } from './database/database.module';
-import { UsersModule } from './users/users.module';
-import { APP_PIPE } from '@nestjs/core';
+import { DatabaseModule } from '@/database/database.module';
+import { UsersModule } from '@/users/users.module';
+import { CurrentUserMiddleware } from '@/middlewares/current-user.middleware';
+import { UtilityModule } from '@/utility/utility.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
+    UtilityModule,
     UsersModule,
   ],
   controllers: [AppController],
@@ -26,4 +29,8 @@ import { APP_PIPE } from '@nestjs/core';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CurrentUserMiddleware).forRoutes('*');
+  }
+}

@@ -17,3 +17,9 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "password": "SecurePass123"
 }
+
+
+### me
+GET http://localhost:8000/service/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0LCJpYXQiOjE3NzE1Nzk2ODcsImV4cCI6MTc3MTY2NjA4N30._vVR3Dy4byOlCieQJcB1xEN44i9S4r93iwY7G7M-IqQ

@@ -1,10 +1,11 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { UserSchemaType } from '@/database/schema/users.schema';
 
-export type UserSessionType = Pick<
-  UserSchemaType,
-  'fname' | 'lname' | 'email'
-> & {
+export type UserSessionType = Pick<UserSchemaType, 'user_id'> & {
+  token: string;
+};
+
+export type UserType = Pick<UserSchemaType, 'fname' | 'lname' | 'email'> & {
   token: string;
 };
 

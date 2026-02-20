@@ -16,7 +16,7 @@ export class JwtService {
     return jwt.sign(o, this.secret, { expiresIn: this.expiresIn });
   }
 
-  decode<T>(token: string): Promise<T> {
+  async decode<T>(token: string): Promise<T> {
     return new Promise((resolve, reject) => {
       try {
         jwt.verify(token, this.secret, (err, decoded) => {
