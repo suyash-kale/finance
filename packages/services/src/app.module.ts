@@ -5,7 +5,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
 import { DatabaseModule } from '@/database/database.module';
-import { UsersModule } from '@/users/users.module';
+import { AuthModule } from '@/auth/auth.module';
 import { CurrentUserMiddleware } from '@/middlewares/current-user.middleware';
 import { UtilityModule } from '@/utility/utility.module';
 
@@ -14,7 +14,7 @@ import { UtilityModule } from '@/utility/utility.module';
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     UtilityModule,
-    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

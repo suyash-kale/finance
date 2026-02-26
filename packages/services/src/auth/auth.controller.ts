@@ -7,7 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 
-import { UsersService } from '@/users/users.service';
+import { AuthService } from '@/auth/auth.service';
 import {
   SignInRequest,
   SignUpRequest,
@@ -18,14 +18,14 @@ import { ServiceError, ServiceErrorCodes } from '@/utility/error';
 import { Auth } from '@/guards/auth.guard';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('signup')
   async signUp(@Body() request: SignUpRequest): Promise<UserType> {
     try {
-      return await this.usersService.signUp(request);
+      return await this.authService.signUp(request);
     } catch (e) {
       if (e instanceof ServiceError) {
         if (e.code === ServiceErrorCodes.EXISTS) {
@@ -36,10 +36,10 @@ export class UsersController {
     }
   }
 
-  @Post('signin')
+  @Post()
   async signIn(@Body() request: SignInRequest): Promise<UserType> {
     try {
-      return await this.usersService.signIn(request);
+      return await this.authService.signIn(request);
     } catch (e) {
       if (e instanceof ServiceError) {
         if (e.code === ServiceErrorCodes.NOTFOUND) {
@@ -53,6 +53,6 @@ export class UsersController {
   @Get()
   @Auth()
   async me(@CurrentUser() user: UserSessionType) {
-    return await this.usersService.me(user);
+    return await this.authService.me(user);
   }
 }

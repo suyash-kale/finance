@@ -15,7 +15,7 @@ import { EncryptService } from '@/utility/encrypt';
 import { JwtService } from '@/utility/jwt';
 
 @Injectable()
-export class UsersService {
+export class AuthService {
   constructor(
     @Inject(DRIZZLE) private db: DrizzleDB,
     @Inject(HashService) private hash: HashService,
