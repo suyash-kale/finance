@@ -8,7 +8,7 @@ import {
   SignUpRequest,
   UserSessionType,
   UserType,
-} from '@/types/user';
+} from '@root/shared';
 import { ServiceError, ServiceErrorCodes } from '@/utility/error';
 import { HashService } from '@/utility/hash';
 import { EncryptService } from '@/utility/encrypt';

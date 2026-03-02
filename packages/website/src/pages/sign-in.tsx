@@ -1,3 +1,8 @@
+import { type FC, useCallback } from "react";
+import { Link } from "react-router";
+import { useForm } from "react-hook-form";
+import { classValidatorResolver } from "@hookform/resolvers/class-validator";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,12 +11,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { FC } from "react";
-import { Link } from "react-router";
+import { SignInRequest } from "@root/shared";
 
 export const SignIn: FC = () => {
+  const form = useForm<SignInRequest>({
+    mode: "onTouched",
+    reValidateMode: "onChange",
+    resolver: classValidatorResolver(SignInRequest),
+  });
+
+  const { handleSubmit } = form;
+
+  const onSuccess = useCallback((data: SignInRequest) => {
+    console.log(data);
+  }, []);
+
   return (
     <div className="flex flex-col h-full items-center justify-center">
       <Card className="w-100">
@@ -22,21 +38,36 @@ export const SignIn: FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="flex flex-col gap-3">
-            <Field>
+          <form
+            onSubmit={handleSubmit(onSuccess)}
+            className="flex flex-col gap-3"
+          >
+            <Field data-invalid={!!form.formState.errors.email}>
               <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input id="email" type="email" placeholder="Enter email.." />
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter email.."
+                {...form.register("email")}
+              />
+              <FieldDescription>
+                {form.formState.errors.email?.message}
+              </FieldDescription>
             </Field>
-            <Field>
+            <Field data-invalid={!!form.formState.errors.password}>
               <FieldLabel htmlFor="password">Password</FieldLabel>
               <Input
                 id="password"
                 type="password"
                 placeholder="Enter password.."
+                {...form.register("password")}
               />
+              <FieldDescription>
+                {form.formState.errors.password?.message}
+              </FieldDescription>
             </Field>
             <div className="flex items-center justify-end">
-              <Button>Submit</Button>
+              <Button type="submit">Submit</Button>
             </div>
           </form>
         </CardContent>

@@ -12,7 +12,7 @@ import {
 
 import { Accounts } from '@/database/schema/accounts.schema';
 import { Users } from '@/database/schema/users.schema';
-import { TRANSACTION_CATEGORIES } from '@/types/transactions';
+import { TRANSACTION_CATEGORIES } from '@root/shared';
 
 export const transactionCategoryEnum = pgEnum(
   'transaction_category',

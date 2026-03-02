@@ -13,7 +13,7 @@ import {
   SignUpRequest,
   type UserSessionType,
   UserType,
-} from '@/types/user';
+} from '@root/shared';
 import { ServiceError, ServiceErrorCodes } from '@/utility/error';
 import { Auth } from '@/guards/auth.guard';
 import { CurrentUser } from '@/decorators/current-user.decorator';

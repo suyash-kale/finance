@@ -11,7 +11,7 @@ import {
 import { pgEnum } from 'drizzle-orm/pg-core';
 
 import { Users } from '@/database/schema/users.schema';
-import { ACCOUNT_CATEGORIES } from '@/types/accounts';
+import { ACCOUNT_CATEGORIES } from '@root/shared';
 
 export const accountCategoryEnum = pgEnum(
   'account_category',
