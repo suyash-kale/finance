@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { SignInRequest } from "@root/shared";
+import { SignInRequest } from "@root/database/types";
 
 export const SignIn: FC = () => {
   const form = useForm<SignInRequest>({

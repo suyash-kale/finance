@@ -6,7 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 
 import "@/styles.css";
-import { queryClient } from "@/utility/query-client";
+import { queryClient } from "@/lib/query-client";
 import { App } from "@/app";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;

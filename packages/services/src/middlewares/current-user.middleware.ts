@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 
-import { UserSessionType } from '@root/shared';
+import { UserSessionType } from '@root/database/types';
 import { JwtService } from '@/utility/jwt';
 
 declare module 'express' {
