@@ -6,6 +6,7 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import axios from "axios";
 
 import "@/styles.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient, persister } from "@/lib/query-client";
 import { App } from "@/app";
 import { Toaster } from "@/components/ui/sonner";
@@ -26,7 +27,9 @@ createRoot(document.getElementById("root")!).render(
         },
       }}
     >
-      <App />
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
       <Toaster />
     </PersistQueryClientProvider>
   </StrictMode>,
