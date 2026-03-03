@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 
 import { service } from "@/services/index";
-import { SignInRequest, type UserType } from "@root/database/types";
+import { SignInRequest, SignUpRequest, type UserType } from "@root/database/types";
 
 export const signInOptions = (
   params?: Omit<MutateOptions<UserType, void, SignInRequest>, "mutationFn">,
@@ -41,6 +41,20 @@ export const authOptions = (
         },
       }),
   });
+};
+
+export const signUpOptions = (
+  params?: Omit<MutateOptions<UserType, void, SignUpRequest>, "mutationFn">,
+): UseMutationOptions<UserType, void, SignUpRequest> => {
+  return {
+    ...params,
+    mutationFn: async (data: SignUpRequest): Promise<UserType> =>
+      service<UserType, SignUpRequest>({
+        method: "POST",
+        url: "auth/signup",
+        data,
+      }),
+  };
 };
 
 export const emailExists = (email: UserType["email"]) =>

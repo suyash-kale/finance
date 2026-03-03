@@ -10,6 +10,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -25,7 +26,7 @@ export const SignIn: FC = () => {
   const { signIn } = useSessionStore();
 
   const form = useForm<SignInRequest>({
-    mode: "onTouched",
+    mode: "onChange",
     reValidateMode: "onChange",
     resolver: classValidatorResolver(SignInRequest),
   });
@@ -117,6 +118,12 @@ export const SignIn: FC = () => {
             </div>
           </form>
         </CardContent>
+        <CardFooter className="flex items-center justify-center px-4 py-2 shadow-inner">
+          Don't have an account?
+          <Link to="/sign-up" className="underline ml-1">
+            Sign up
+          </Link>
+        </CardFooter>
       </Card>
       <div className="w-100 text-xs text-gray-600 text-center mt-4">
         <div>By clicking submit, you agree to our</div>

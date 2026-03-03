@@ -60,7 +60,7 @@ export class AuthService {
     return {
       fname: user.fname,
       lname: user.lname,
-      email: user.email,
+      email: request.email,
       token: this.jwt.encode({ user_id: user.user_id }),
     };
   }
