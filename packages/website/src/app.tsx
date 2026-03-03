@@ -1,22 +1,44 @@
-import { Route, Routes } from "react-router";
-import { BrowserRouter } from "react-router";
+import { useEffect, type FC } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { LayoutPublic } from "@/components/layout/public";
-import { SignIn } from "@/pages/sign-in";
-import { SignUp } from "@/pages/sign-up";
+import { Router } from "@/router";
+import { useSessionStore } from "@/store/session";
+import { authOptions } from "@/services/auth";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 
-export function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LayoutPublic />}>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+export const App: FC = () => {
+  const { user, signIn } = useSessionStore();
+
+  const token = localStorage.getItem("token");
+
+  const { isLoading, data } = useQuery(
+    authOptions(token, { enabled: !user && !!token }),
   );
-}
 
-export default App;
+  useEffect(() => {
+    if (data) {
+      signIn(data);
+    }
+  }, [data, signIn]);
+
+  return isLoading ? (
+    <div className="flex flex-col h-full items-center justify-center">
+      <Card className="w-100">
+        <CardHeader>
+          <CardTitle className="text-xl text-center">Please wait ..</CardTitle>
+          <CardDescription className="flex items-center justify-center gap-2">
+            <Spinner /> We are getting things ready for you.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    </div>
+  ) : (
+    <Router />
+  );
+};

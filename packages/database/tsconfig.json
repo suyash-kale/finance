@@ -3,7 +3,7 @@
     "outDir": "dist",
     "declaration": true,
     "emitDeclarationOnly": false,
-    "module": "ESNext",
+    "module": "commonjs",
     "target": "ES2019",
     "moduleResolution": "Node",
     "experimentalDecorators": true,
@@ -11,7 +11,8 @@
     "strict": true,
     "esModuleInterop": true,
     "strictPropertyInitialization": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["ES2019"]
   },
   "include": ["src"]
 }

@@ -6,14 +6,17 @@
   "private": true,
   "exports": {
     ".": {
+      "require": "./dist/index.js",
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./schema": {
+      "require": "./dist/schema/index.js",
       "import": "./dist/schema/index.js",
       "types": "./dist/schema/index.d.ts"
     },
     "./types": {
+      "require": "./dist/types/index.js",
       "import": "./dist/types/index.js",
       "types": "./dist/types/index.d.ts"
     }
