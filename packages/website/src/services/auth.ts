@@ -42,3 +42,10 @@ export const authOptions = (
       }),
   });
 };
+
+export const emailExists = (email: UserType["email"]) =>
+  service<boolean, { email: string }>({
+    method: "POST",
+    url: "auth/email-exists",
+    data: { email },
+  });

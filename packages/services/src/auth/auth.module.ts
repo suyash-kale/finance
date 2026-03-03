@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 
 import { AuthService } from '@/auth/auth.service';
 import { AuthController } from '@/auth/auth.controller';
@@ -8,7 +9,7 @@ import { EncryptService } from '@/utility/encrypt';
 import { JwtService } from '@/utility/jwt';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CacheModule.register()],
   providers: [AuthService, HashService, EncryptService, JwtService],
   controllers: [AuthController],
 })

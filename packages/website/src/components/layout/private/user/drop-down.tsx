@@ -11,6 +11,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getFallback } from "@/lib/get-fallback";
 import { useSessionStore } from "@/store/session";
+import { queryClient } from "@/lib/query-client";
 
 export const DropDown: FC = () => {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ export const DropDown: FC = () => {
   const { user, signOut } = useSessionStore();
 
   const onSignOut = useCallback(() => {
+    queryClient.clear();
+    localStorage.removeItem("token");
     signOut();
     navigate("/sign-in");
   }, [signOut, navigate]);

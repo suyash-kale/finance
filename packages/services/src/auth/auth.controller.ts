@@ -55,4 +55,9 @@ export class AuthController {
   async me(@CurrentUser() user: UserSessionType) {
     return await this.authService.me(user);
   }
+
+  @Post('email-exists')
+  async emailExists(@Body('email') email: string): Promise<boolean> {
+    return await this.authService.emailExists(email);
+  }
 }

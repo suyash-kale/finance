@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { count, eq, or } from 'drizzle-orm';
 import { validate } from 'class-validator';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 import { DRIZZLE, type DrizzleDB, Schema } from '@/database/database.module';
 import {
@@ -21,6 +22,7 @@ export class AuthService {
     @Inject(HashService) private hash: HashService,
     @Inject(EncryptService) private encrypt: EncryptService,
     @Inject(JwtService) private jwt: JwtService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async signUp(request: SignUpRequest): Promise<UserType> {
@@ -50,6 +52,7 @@ export class AuthService {
         password: await this.hash.hash(request.password),
       })
       .returning({
+        user_id: Schema.Users.user_id,
         fname: Schema.Users.fname,
         lname: Schema.Users.lname,
         email: Schema.Users.email,
@@ -58,7 +61,7 @@ export class AuthService {
       fname: user.fname,
       lname: user.lname,
       email: user.email,
-      token: this.jwt.encode({ user_id: user.email }),
+      token: this.jwt.encode({ user_id: user.user_id }),
     };
   }
 
@@ -107,8 +110,13 @@ export class AuthService {
   }
 
   async me(session: UserSessionType): Promise<UserType> {
+    const cache = await this.cacheManager.get<UserType>(
+      `me:${session.user_id}`,
+    );
+    if (cache) {
+      return cache;
+    }
     const [user] = await this.db
-
       .select({
         fname: Schema.Users.fname,
         lname: Schema.Users.lname,
@@ -125,5 +133,27 @@ export class AuthService {
       email: await this.encrypt.decrypt(user.email),
       token: session.token,
     };
+  }
+
+  async emailExists(email: string): Promise<boolean> {
+    const [user] = await this.db
+      .select({
+        user_id: Schema.Users.user_id,
+        fname: Schema.Users.fname,
+        lname: Schema.Users.lname,
+        email: Schema.Users.email,
+      })
+      .from(Schema.Users)
+      .where(eq(Schema.Users.email, await this.encrypt.encrypt(email)));
+    if (user) {
+      await this.cacheManager.set<UserType>(`me:${user.user_id}`, {
+        fname: user.fname,
+        lname: user.lname,
+        email: await this.encrypt.decrypt(user.email),
+        token: this.jwt.encode({ user_id: user.user_id }),
+      });
+      return true;
+    }
+    return false;
   }
 }

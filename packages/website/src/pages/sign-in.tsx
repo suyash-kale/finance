@@ -1,4 +1,4 @@
-import { type FC, useCallback } from "react";
+import { type FC, useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { classValidatorResolver } from "@hookform/resolvers/class-validator";
@@ -16,7 +16,7 @@ import {
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { SignInRequest, type UserType } from "@root/database/types";
-import { signInOptions } from "@/services/auth";
+import { emailExists, signInOptions } from "@/services/auth";
 import { useSessionStore } from "@/store/session";
 
 export const SignIn: FC = () => {
@@ -32,10 +32,12 @@ export const SignIn: FC = () => {
 
   const { handleSubmit } = form;
 
+  const [exists, setExists] = useState(false);
+
   const onSuccess = useCallback(
     (data: UserType) => {
       signIn(data);
-      toast.success(`Welcome back, ${data.fname}!`);
+      toast.success(`Welcome, ${data.fname}!`);
       navigate("/dashboard");
     },
     [signIn, navigate],
@@ -45,14 +47,27 @@ export const SignIn: FC = () => {
 
   const onSubmit = useCallback(
     (data: SignInRequest) => {
+      if (!exists) {
+        toast.error("Invalid email or password.");
+        return;
+      }
       mutate(data);
     },
-    [mutate],
+    [mutate, exists],
   );
 
   const onSubmitError = useCallback(() => {
     toast.error("Please check your input and try again.");
   }, []);
+
+  const onEmailBlur = useCallback(
+    async (e: React.FocusEvent<HTMLInputElement>) => {
+      setExists(false);
+      const bol = await emailExists(e.target.value);
+      setExists(bol);
+    },
+    [],
+  );
 
   return (
     <div className="flex flex-col h-full items-center justify-center">
@@ -76,6 +91,7 @@ export const SignIn: FC = () => {
                 placeholder="Enter email.."
                 {...form.register("email")}
                 disabled={isPending}
+                onBlur={onEmailBlur}
               />
               <FieldDescription>
                 {form.formState.errors.email?.message}
